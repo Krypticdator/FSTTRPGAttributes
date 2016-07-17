@@ -1,0 +1,6 @@
+pyside
+peewee
+traits
+traitsui
+-e git+https://github.com/Krypticdator/FSTTRPGCharacterLoader.git#egg=FSTTRPGCharacterLoader
+-e git+https://github.com/Krypticdator/FSTTRPGBasicInfo.git#egg=FSTTRPGBasicInfo

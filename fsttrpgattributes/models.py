@@ -29,13 +29,17 @@ class Attribute(object):
         elif self.attr_type != other.attr_type:
             # print('types are not the same, returning false')
             return False
+        elif self.field != other.field:
+            print('fields are not the same, returning false')
+            return False
         else:
             # print('same, returning true')
             return True
 
-        '''elif self.field != other.field:
-            print('fields are not the same, returning false')
-            return False'''
+    def __ne__(self, other):
+        return not self.__eq__(other)
+
+
 
     def __repr__(self):
         if self.field != "":
@@ -57,6 +61,8 @@ class Complication(Attribute):
             return False
         elif other.attr_type != self.attr_type:
             return False
+        elif other.field != self.field:
+            return False
         else:
             return True
 
@@ -74,6 +80,8 @@ class Perk(Attribute):
         elif other.attr_type != self.attr_type:
             return False
         elif other.target_person_name != self.target_person_name:
+            return False
+        elif other.field != self.field:
             return False
         else:
             return True
