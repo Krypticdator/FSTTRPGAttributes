@@ -13,5 +13,9 @@ script:
   - python test_fsttrpgattributes.py
   - coverage run test_fsttrpgattributes.py
 
+notifications:
+  slack: nurmi:HtpThqIjtEOCahvVuY2wzFGP
+
 after_success:
   - coveralls
+
