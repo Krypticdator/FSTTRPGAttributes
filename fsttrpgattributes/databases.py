@@ -246,8 +246,11 @@ class DBManager(object):
                                                                  short=a['short'], stat=a['stat'])
 
     def __del__(self):
-        if attributes_db:
-            attributes_db.close()
+        try:
+            if attributes_db:
+                attributes_db.close()
+        except TypeError:
+            print('failed to close the database')
 
 
 if __name__ == '__main__':

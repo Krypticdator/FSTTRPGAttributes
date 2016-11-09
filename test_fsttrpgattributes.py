@@ -1,7 +1,9 @@
 import os
 import unittest
 
+from fsttrpgattributes.databases import DBManager
 from fsttrpgattributes.models import Attribute, Complication, Perk, AttributeManager
+from fsttrpgattributes.traitsmodels import CharacterAttributes
 
 
 class TestModels(unittest.TestCase):
@@ -124,6 +126,41 @@ class TestModels(unittest.TestCase):
         self.assertEqual(s1.field, 'italy')
         self.assertEqual(s2.field, 'rome')
         self.assertEqual(s3.field, 'greek')
+
+    def tearDown(self):
+        try:
+            os.remove('actors.db')
+            os.remove('filepaths.db')
+            os.remove('attributes.db')
+        except WindowsError as e:
+            print('failed to delete: ' + str(e))
+
+
+class TestDataBase(unittest.TestCase):
+    def test_get_pack_names(self):
+        db_mgr = DBManager()
+        db_mgr.career_packs.add(career_name='test', attr_type='skill', attr_name='handgun')
+        self.assertEqual(db_mgr.career_packs.get_pack_names(), [u'test'])
+
+    def tearDown(self):
+        try:
+            os.remove('actors.db')
+            os.remove('filepaths.db')
+            os.remove('attributes.db')
+        except WindowsError as e:
+            print('failed to delete: ' + str(e))
+
+
+class TestTraitModels(unittest.TestCase):
+    def test_character_attributes_initialization(self):
+        ca = CharacterAttributes()
+        self.assertTrue(True)
+
+    def test_career_package_generation(self):
+        ca = CharacterAttributes()
+        ca.career = 'solo'
+        ca._generate_career_package_fired()
+        self.assertTrue(True)
 
     def tearDown(self):
         try:

@@ -25,10 +25,10 @@ class AttributeRandomizer(HasTraits):
 
 
 class CharacterAttributes(HasTraits):
-    # career = Enum('none', 'solo', 'corporate', 'media', 'nomad', 'techie', 'cop', 'rockerboy', 'tech', 'med tech',
-    #              'fixer')
+    career = Enum('none', 'solo', 'corporate', 'media', 'nomad', 'techie', 'cop', 'rockerboy', 'tech', 'med tech',
+                  'fixer')
     configure_randomizer = Instance(AttributeRandomizer, ())
-    career = Enum(database_manager.career_packs.get_pack_names())
+    # career = Enum(database_manager.career_packs.get_pack_names())
     option_points_allocated = Int()
     generate_career_package = Button()
     choose_skills = Instance(SkillWindow, ())
