@@ -25,9 +25,10 @@ class AttributeRandomizer(HasTraits):
 
 
 class CharacterAttributes(HasTraits):
+    # TODO - Load careers dynamically
     career = Enum('none', 'solo', 'corporate', 'media', 'nomad', 'techie', 'cop', 'rockerboy', 'tech', 'med tech',
                   'fixer')
-    configure_randomizer = Instance(AttributeRandomizer, ())
+    # configure_randomizer = Instance(AttributeRandomizer, ())
     # career = Enum(database_manager.career_packs.get_pack_names())
     option_points_allocated = Int()
     generate_career_package = Button()
@@ -52,7 +53,7 @@ class CharacterAttributes(HasTraits):
                 self.choose_perks.equipped.add(attribute.attribute_blueprint.name)
 
     view = View(
-        Item('configure_randomizer'),
+        # Item('configure_randomizer'),
         Item('career'),
         Item('option_points_allocated', style='readonly'),
         Item('generate_career_package', show_label=False),
