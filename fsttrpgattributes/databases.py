@@ -37,7 +37,7 @@ class AttributeBlueprint(BaseModel):
                                                                         'cost': cost,
                                                                         'desc': desc})
         if created:
-            print('created new blueprint')
+            print('created new blueprint: ' + name)
         else:
             blueprint.category = category
             blueprint.cost = cost
@@ -140,7 +140,7 @@ class Attribute(BaseModel):
                                                      defaults={'lvl': lvl,
                                                                'field': field})
         if created:
-            print('created new attribute')
+            print('created new attribute: ' + blueprint_name)
         else:
             attribute.lvl = lvl
             attribute.field = field
