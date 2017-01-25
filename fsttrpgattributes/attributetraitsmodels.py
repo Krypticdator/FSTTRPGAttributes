@@ -1,4 +1,5 @@
-from fsttrpgbasicinfo.traitsmodels import BasicInfo, CharacterName
+from fsttrpgbasicinfo.traitmvc.models import CharacterName
+from fsttrpgbasicinfo.traitmvc.views import BasicInfo
 from traits.api import HasTraits, Any, Range, String, Enum, List, Instance, Button, Method
 from traitsui.api import View, HGroup, Item, CheckListEditor, VGroup, ListEditor
 

@@ -2,7 +2,7 @@ from distutils.core import setup
 
 setup(
     name='FSTTRPGAttributes',
-    version='0.0.3',
+    version='0.0.4',
     packages=['fsttrpgattributes'],
     url='',
     license='',
