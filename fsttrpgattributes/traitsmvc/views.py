@@ -57,17 +57,6 @@ class AllAttributeListsTabbedView(AllAttributeListsView):
     save = Button()  # TODO delete me
     load = Button()  # TODO delete me
 
-    def _save_fired(self):
-        self.skills.save('Testi', 'NPC')
-        self.complications.save('Testi', 'NPC')
-        self.perks.save('Testi', 'NPC')
-        self.talents.save('Testi', 'NPC')
-
-    def _load_fired(self):
-        self.complications.load('Testi', 'NPC')
-        self.skills.load('Testi', 'NPC')
-        self.talents.load('Testi', 'NPC')
-        self.perks.load('Testi', 'NPC')
 
     view = View(
         Tabbed(
@@ -75,9 +64,7 @@ class AllAttributeListsTabbedView(AllAttributeListsView):
             Item('complications', style='custom', show_label=False),
             Item('perks', style='custom', show_label=False),
             Item('talents', style='custom', show_label=False)
-        ),
-        Item('save', show_label=False),
-        Item('load', show_label=False)
+        )
     )
 
 
