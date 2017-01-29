@@ -1,3 +1,5 @@
+from collections import namedtuple
+
 from fsttrpgcharloader.database import Actor, DBManager as ActorDBManager
 from peewee import Model, SqliteDatabase, CharField, IntegerField, BooleanField, ForeignKeyField, DoubleField, \
     DoesNotExist
@@ -94,6 +96,10 @@ class SkillBlueprint(BaseModel):
         skill_blueprint.save()
 
 
+# name category chip_lvl_cost chippable diff short stat chipped ip lvl carbon_lvl field
+SkillTuple = namedtuple('SkillTuple',
+                        field_names='name category chip_lvl_cost chippable diff short stat chipped ip lvl carbon_lvl field')
+
 class Skill(BaseModel):
     blueprint = ForeignKeyField(SkillBlueprint, related_name='effective_skills')
     actor = ForeignKeyField(Actor, related_name='actors')
@@ -123,6 +129,31 @@ class Skill(BaseModel):
             skill.field = field
             skill.blueprint = blueprint
             skill.save()
+
+    @staticmethod
+    def load_skills_of(actor_role, actor_name):
+        act = Actor.add_or_get(role=actor_role, name=actor_name)
+        q = Skill.select(Skill, SkillBlueprint).join(SkillBlueprint).where(Skill.actor == act)
+        skills = []
+        for skill in q:
+            name = skill.blueprint.blueprint.name
+            category = skill.blueprint.blueprint.category
+            chip_lvl_cost = skill.blueprint.chip_lvl_cost
+            chippable = skill.blueprint.chippable
+            diff = skill.blueprint.diff
+            short = skill.blueprint.short
+            stat = skill.blueprint.stat
+            chipped = skill.chipped
+            ip = skill.ip
+            lvl = skill.lvl
+            carbon_lvl = skill.carbon_lvl
+            field = skill.field
+            # name category chip_lvl_cost chippable diff short stat chipped ip lvl carbon_lvl field
+            s = SkillTuple(name=name, category=category, chip_lvl_cost=chip_lvl_cost, chippable=chippable, diff=diff,
+                           short=short, stat=stat, chipped=chipped, ip=ip, lvl=lvl, carbon_lvl=carbon_lvl, field=field)
+            skills.append(s)
+        return skills
+
 
 
 class Attribute(BaseModel):
@@ -179,6 +210,15 @@ class Perk(BaseModel):
         else:
             pass
 
+    @staticmethod
+    def get_perks_of_actor(actor_role, actor_name):
+        actor = Actor.add_or_get(actor_role, actor_name)
+        Perk.select().where(Perk.base_attribute.actor == actor)
+        # perks = Perk.select().where(Perk.base_attribute==actor)
+
+
+ComplicationTuple = namedtuple('ComplicationTuple', field_names='name intensity frequency importance')
+
 
 class Complication(BaseModel):
     base_attribute = ForeignKeyField(Attribute, related_name='complications')
@@ -186,7 +226,8 @@ class Complication(BaseModel):
     frequency = IntegerField()
     importance = IntegerField()
 
-    def add_or_modify(self, actor_name, actor_role, blueprint_name, intensity, frequency, importance):
+    @staticmethod
+    def add_or_modify(actor_name, actor_role, blueprint_name, intensity, frequency, importance):
 
         attribute = Attribute.get_attribute(attribute_type='complication', actor_role=actor_role, actor_name=actor_name,
                                             blueprint_name=blueprint_name)
@@ -203,6 +244,20 @@ class Complication(BaseModel):
             complication.frequency = frequency
             complication.importance = importance
             complication.save()
+
+    @staticmethod
+    def load_complications_of(actor_role, actor_name):
+        act = Actor.add_or_get(role=actor_role, name=actor_name)
+        q = Complication.select(Complication, Attribute).join(Attribute).where(Attribute.actor == act,
+                                                                               Attribute.attribute_type == 'complication')
+        complications = []
+        for row in q:
+            name = row.base_attribute.blueprint.name
+            freq = row.frequency
+            inte = row.intensity
+            impo = row.importance
+            complications.append(ComplicationTuple(name=name, frequency=freq, intensity=inte, importance=impo))
+        return complications
 
 
 class DBManager(object):
