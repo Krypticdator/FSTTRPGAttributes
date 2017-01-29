@@ -6,8 +6,12 @@ class AttributeLists(object):
         super(AttributeLists, self).__init__()
         db = DBManager()
         self.all_attribute_names = ['none']
+        self.descriptions = {}
+        self.costs = {}
         for skill in db.attribute_blueprints.get_all_of_type(attribute_type):
             self.all_attribute_names.append(str(skill.name))
+            self.descriptions[skill.name] = skill.desc
+            self.costs[skill.name] = skill.cost
 
 
 class Attribute(object):
