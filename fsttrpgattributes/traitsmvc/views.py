@@ -66,6 +66,8 @@ class AllAttributeListsTabbedView(AllAttributeListsView):
     def _load_fired(self):
         self.complications.load('Testi', 'NPC')
         self.skills.load('Testi', 'NPC')
+        self.talents.load('Testi', 'NPC')
+        self.perks.load('Testi', 'NPC')
 
     view = View(
         Tabbed(
@@ -82,6 +84,6 @@ class AllAttributeListsTabbedView(AllAttributeListsView):
 if __name__ == '__main__':
     all_atr_view = AllAttributeListsTabbedView()
     all_atr_view.configure_traits()
-    # db_mgr = DBManager()
-    # attributes = db_mgr.perks.get_perks_of_actor('NPC', 'Testi')
+
     # db_mgr.skills.load_skills_of('NPC', 'Testi')
+    # db_mgr.attributes.load_attributes_of('NPC', 'Testi', 'talent')

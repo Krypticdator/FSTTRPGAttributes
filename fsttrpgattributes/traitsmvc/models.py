@@ -151,8 +151,9 @@ class Perk(Attribute):
 
     def _name_changed(self):
         if self.name == 'contact' or self.name == 'favor':
-            self.person_basic_info.random_all()
-            self.person_name = self.person_basic_info.character_name.get_name()
+            if self.person_basic_info.character_name.get_name() == "":
+                self.person_basic_info.random_all()
+        self.person_name = self.person_basic_info.character_name.get_name()
 
     def save(self, actor_name, actor_role):
         if self.name == 'none':
@@ -203,8 +204,6 @@ class AttributeList(HasTraits):
         for attribute in self.attributes:
             attribute.save(actor_name, actor_role)
 
-    def load(self, actor_name, actor_role):
-        pass
 
     view = View(
         VGroup(
@@ -221,6 +220,15 @@ class AttributeList(HasTraits):
 
 class TalentList(AttributeList):
     attributes = List(Instance(Talent, ()))
+
+    def load(self, actor_name, actor_role):
+        self.attributes = []
+        db_mgr = DBManager()
+        array = db_mgr.attributes.load_attributes_of(actor_role=actor_role, actor_name=actor_name,
+                                                     attribute_type='talent')
+        for t in array:
+            talent = Talent(name=t.name, lvl=t.lvl, field=t.field)
+            self.attributes.append(talent)
 
     def _attributes_default(self):
         return [Talent()]
@@ -265,6 +273,25 @@ class ComplicationList(AttributeList):
 
 class PerkList(AttributeList):
     attributes = List(Instance(Perk, ()))
+
+    def load(self, actor_name, actor_role):
+        db_mgr = DBManager()
+        self.attributes = []
+        db_perks = db_mgr.perks.get_perks_of_actor(actor_role=actor_role, actor_name=actor_name)
+
+        for p in db_perks:
+            name = p.name
+            field = p.field
+            lvl = p.lvl
+            if p.target_name is not None:
+                bi = BasicInfo()
+                bi.character_name.set_name(p.target_name)
+                bi.character_name.role = p.target_role
+                bi.load()
+                self.attributes.append(Perk(name=name, field=field, lvl=lvl, person_basic_info=bi))
+            else:
+                self.attributes.append(Perk(name=name, field=field, lvl=lvl))
+
 
     def _attributes_default(self):
         return [Perk()]

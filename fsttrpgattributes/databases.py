@@ -155,7 +155,7 @@ class Skill(BaseModel):
         return skills
 
 
-
+AttributeTuple = namedtuple('AttributeTuple', 'name lvl field')
 class Attribute(BaseModel):
     attribute_type = CharField()
     blueprint = ForeignKeyField(AttributeBlueprint, related_name='effective_attributes')
@@ -188,6 +188,21 @@ class Attribute(BaseModel):
             print(str(e))
             return None
 
+    @staticmethod
+    def load_attributes_of(actor_role, actor_name, attribute_type):
+        act = Actor.add_or_get(actor_role, actor_name)
+        q = Attribute.select().where(Attribute.attribute_type == attribute_type, Attribute.actor == act)
+        attributes = []
+        for a in q:
+            name = a.blueprint.name
+            lvl = a.lvl
+            field = a.field
+            attribute = AttributeTuple(name=name, lvl=lvl, field=field)
+            attributes.append(attribute)
+        return attributes
+
+
+PerkTuple = namedtuple('PerkTuple', field_names='name lvl field target_name target_role')
 
 class Perk(BaseModel):
     base_attribute = ForeignKeyField(Attribute, related_name='perks')
@@ -213,8 +228,21 @@ class Perk(BaseModel):
     @staticmethod
     def get_perks_of_actor(actor_role, actor_name):
         actor = Actor.add_or_get(actor_role, actor_name)
-        Perk.select().where(Perk.base_attribute.actor == actor)
-        # perks = Perk.select().where(Perk.base_attribute==actor)
+        # Perk.select().where(Perk.base_attribute.actor == actor)
+
+        q = Perk.select(Perk, Attribute).join(Attribute).where(Attribute.actor == actor)
+        perks = []
+        for p in q:
+            name = p.base_attribute.blueprint.name
+            lvl = p.base_attribute.lvl
+            field = p.base_attribute.field
+            target = p.target
+            if target is not None:
+                perks.append(PerkTuple(name=name, lvl=lvl, field=field, target_name=target.name,
+                                       target_role=target.role))
+            else:
+                perks.append(PerkTuple(name=name, lvl=lvl, field=field, target_name=None, target_role=None))
+        return perks
 
 
 ComplicationTuple = namedtuple('ComplicationTuple', field_names='name intensity frequency importance')
